@@ -8,6 +8,7 @@ import { connectDB } from './lib/db.js';
 // routes
 import userRoutes from './routes/user.route.js';
 import messageRoutes from './routes/message.route.js';
+import workerRoutes from './routes/workers.route.js';
 
 // create express app
 const app = express();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 // sample route
 app.use('/api/user', userRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/api/workers', workerRoutes);
 
 // connect DB & start the server
 connectDB().then(() => {
