@@ -4,6 +4,9 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 // Local imports
 import { ENV } from './lib/env.js';
+import { connectDB } from './lib/db.js';
+// routes
+import userRoutes from './routes/user.route.js';
 
 // create express app
 const app = express();
@@ -16,11 +19,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 // sample route
-app.get('/', (req, res) => {
-  res.send('Welcome to the SizaFi backend!');
-});
+app.use('/api/user', userRoutes);
 
-// start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// connect DB & start the server
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
