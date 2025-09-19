@@ -31,7 +31,7 @@ export const signupUser = async (req, res) => {
       fullname,
       email,
       password: hashedPassword,
-      role
+      role,
     });
 
     await newUser.save();
@@ -42,9 +42,8 @@ export const signupUser = async (req, res) => {
       _id: newUser._id,
       fullname: newUser.fullname,
       email: newUser.email,
-      role: newUser.role
+      role: newUser.role,
     });
-
   } catch (error) {
     console.error("Error in signupUser:", error);
     res.status(500).json({ message: "Server error" });
@@ -62,13 +61,13 @@ export const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if(!user){
+    if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const match = await bcrypt.compare(password, user.password);
 
-    if(!match){
+    if (!match) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
@@ -79,16 +78,72 @@ export const loginUser = async (req, res) => {
       fullname: user.fullname,
       email: user.email,
       profilePic: user.profilePic,
-      role: user.role
+      role: user.role,
     });
-
   } catch (error) {
-    console.log('Error in loginUser:', error);
+    console.log("Error in loginUser:", error);
     return res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 export const logoutUser = (_, res) => {
-  res.cookie('jwt', '', {maxAge: 0});
+  res.cookie("jwt", "", { maxAge: 0 });
   res.status(200).json({ message: "Logged out successfully" });
-}
+};
+
+// WORKERS DETAILS
+export const getAllWorkers = async (req, res) => {
+  try {
+    // Define the worker roles you want to include
+    const workerRoles = [
+      "plumber",
+      "electrician",
+      "carpenter",
+      "painter",
+      "gardener",
+      "cleaner",
+    ];
+
+    // Find all users whose role is in the workerRoles array
+    const workers = await User.find({ role: { $in: workerRoles } }).select(
+      "-password"
+    ); 
+
+    res.status(200).json(workers);
+  } catch (error) {
+    console.error("Error in getAllWorkers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getWorkerById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Define allowed worker roles
+    const workerRoles = [
+      'plumber',
+      'electrician',
+      'carpenter',
+      'painter',
+      'gardener',
+      'cleaner'
+    ];
+
+    // Find user by ID and ensure they are a worker
+    const worker = await User.findOne({
+      _id: id,
+      role: { $in: workerRoles }
+    }).select('-password'); // exclude password
+
+    if (!worker) {
+      return res.status(404).json({ message: "Worker not found" });
+    }
+
+    res.status(200).json(worker);
+  } catch (error) {
+    console.error("Error in getWorkerById:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
