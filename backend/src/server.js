@@ -17,7 +17,7 @@ const { PORT } = ENV;
 
 // middlewares
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

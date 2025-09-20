@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Payment from '../models/Payment.js';
 import User from '../models/user.model.js';
+import { ENV } from '../lib/env.js';
 
 // Initialize payment
 export const initializePayment = async (req, res) => {
@@ -39,7 +40,7 @@ export const initializePayment = async (req, res) => {
         email: req.user.email,
         amount: amount * 100, // Convert to kobo
         reference,
-        callback_url: `${process.env.FRONTEND_URL}/payment/verify`,
+        callback_url: `${ENV.FRONTEND_URL}/payment/verify`,
         metadata: {
           custom_fields: [
             {
@@ -57,7 +58,7 @@ export const initializePayment = async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${ENV.PAYSTACK_SECRET_KEY}`,
           'Content-Type': 'application/json'
         }
       }
@@ -84,7 +85,7 @@ export const verifyPayment = async (req, res) => {
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+          Authorization: `Bearer ${ENV.PAYSTACK_SECRET_KEY}`
         }
       }
     );
@@ -123,40 +124,40 @@ export const verifyPayment = async (req, res) => {
 };
 
 // Webhook endpoint for Paystack
-// export const paymentWebhook = async (req, res) => {
-//   try {
-//     // Validate webhook event
-//     const secret = process.env.PAYSTACK_SECRET_KEY;
-//     const signature = req.headers['x-paystack-signature'];
+export const paymentWebhook = async (req, res) => {
+  try {
+    // Validate webhook event
+    const secret = ENV.PAYSTACK_SECRET_KEY;
+    const signature = req.headers['x-paystack-signature'];
     
-//     if (!signature) {
-//       return res.status(400).send('No signature');
-//     }
+    if (!signature) {
+      return res.status(400).send('No signature');
+    }
     
-//     // For webhook verification, you'll need to implement signature validation
-//     // This is a simplified version
-//     const event = req.body;
+    // For webhook verification, you'll need to implement signature validation
+    // This is a simplified version
+    const event = req.body;
     
-//     // Handle the event
-//     if (event.event === 'charge.success') {
-//       const { reference } = event.data;
+    // Handle the event
+    if (event.event === 'charge.success') {
+      const { reference } = event.data;
       
-//       // Update payment status
-//       await Payment.findOneAndUpdate(
-//         { reference },
-//         { 
-//           status: 'success',
-//           paystackData: event.data
-//         }
-//       );
-//     }
+      // Update payment status
+      await Payment.findOneAndUpdate(
+        { reference },
+        { 
+          status: 'success',
+          paystackData: event.data
+        }
+      );
+    }
     
-//     res.sendStatus(200);
-//   } catch (error) {
-//     console.error('Webhook error:', error);
-//     res.status(500).send('Webhook error');
-//   }
-// };
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Webhook error:', error);
+    res.status(500).send('Webhook error');
+  }
+};
 
 // Get user payment history
 export const getPaymentHistory = async (req, res) => {
