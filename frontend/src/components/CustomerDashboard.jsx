@@ -10,7 +10,8 @@ import {
   Settings,
   Bell,
   Search,
-  Filter
+  Filter,
+  Paperclip
 } from "lucide-react";
 
 function CustomerDashboard() {
@@ -100,13 +101,14 @@ function CustomerDashboard() {
             </div>
           </Link>
 
-          <Link to="/my-bookings" className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+          <Link to="/register" className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
             <div className="card-body items-center text-center">
               <div className="p-3 rounded-full bg-purple-100 text-purple-600 mb-2">
-                <Clock size={24} />
+                {/* <Clock size={24} /> */}
+                <Paperclip size={24} />
               </div>
-              <h3 className="card-title text-lg">My Bookings</h3>
-              <p className="text-sm text-gray-500">View your appointments</p>
+              <h3 className="card-title text-lg">Become a worker</h3>
+              <p className="text-sm text-gray-500">pply to become an artisan</p>
             </div>
           </Link>
 

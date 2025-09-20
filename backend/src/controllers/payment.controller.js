@@ -173,3 +173,37 @@ export const getPaymentHistory = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch payment history' });
   }
 };
+
+// Get worker's earnings and payment history
+export const getWorkerEarnings = async (req, res) => {
+  try {
+    const workerId = req.user._id;
+
+    // Ensure only workers can access this
+    const worker = await User.findById(workerId);
+    if (!worker || !['plumber', 'electrician', 'carpenter', 'painter', 'gardener', 'cleaner'].includes(worker.role)) {
+      return res.status(403).json({ error: 'Access denied. Only workers can view earnings.' });
+    }
+
+    // Find all successful payments for this worker
+    const payments = await Payment.find({ worker: workerId, status: 'success' })
+      .populate('user', 'fullname email') // show who paid
+      .sort({ createdAt: -1 });
+
+    // Calculate total earnings
+    const totalEarnings = payments.reduce((sum, p) => sum + p.amount, 0);
+
+    res.json({
+      worker: {
+        id: worker._id,
+        fullname: worker.fullname,
+        role: worker.role
+      },
+      totalEarnings,
+      payments
+    });
+  } catch (error) {
+    console.error('Error fetching worker earnings:', error);
+    res.status(500).json({ error: 'Failed to fetch worker earnings' });
+  }
+};
