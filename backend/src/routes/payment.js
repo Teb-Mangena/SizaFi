@@ -4,7 +4,8 @@ import {
   initializePayment,
   verifyPayment,
   getPaymentHistory,
-  paymentWebhook
+  paymentWebhook,
+  getWorkerEarnings
 } from '../controllers/payment.controller.js';
 import { protectRoute } from '../middlewares/user.middleware.js';
 
@@ -18,5 +19,7 @@ router.get('/verify/:reference', protectRoute, verifyPayment);
 router.post('/webhook', paymentWebhook); // This should not be protected
 
 router.get('/history', protectRoute, getPaymentHistory);
+
+router.get('/worker/earnings', protectRoute, getWorkerEarnings);
 
 export default router;

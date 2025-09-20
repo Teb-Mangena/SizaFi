@@ -9,6 +9,13 @@ import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import Navbar from './components/Navbar.jsx'
 import PageLoader from './components/PageLoader.jsx'
+import BookService from './pages/BookService.jsx'
+import WorkerDashboard from './components/WorkerDashboard.jsx'
+import PaymentsPage from './pages/PaymentsPage.jsx'
+import ChatsPage from './pages/ChatsPage.jsx'
+import WorkerDetails from './components/WorkerDetails.jsx'
+import RegisterAsWorker from './pages/RegisterAsWorker.jsx'
+import PaymentVerify from './pages/PaymentVerify.jsx'
 
 function App() {
 
@@ -44,6 +51,39 @@ function App() {
           path="/signup" 
           element={!user ? <SignupPage /> : <Navigate to="/" />} 
         />
+
+        <Route 
+          path='/book-service'
+          element={user ? <BookService /> : <Navigate to="/login" />}
+        />
+
+        <Route 
+          path='/workers'
+          element={user ? <BookService /> : <Navigate to="/login" />}
+        />
+
+        <Route 
+          path='/payment-methods'
+          element={user ? <PaymentsPage /> : <Navigate to="/login" />}
+        />
+
+        <Route 
+          path='/register'
+          element={user ? <RegisterAsWorker /> : <Navigate to="/login" />}
+        />
+
+        <Route 
+          path='/messages'
+          element={user ? <ChatsPage /> : <Navigate to="/login" />}
+        />
+
+        <Route 
+          path='/worker-details/:id'
+          element={user ? <WorkerDetails /> : <Navigate to="/login" />}
+        />
+
+        <Route path="/payment/verify" element={<PaymentVerify />} />
+
       </Routes>
 
       <Toaster />
