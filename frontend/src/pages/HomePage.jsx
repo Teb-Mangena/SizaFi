@@ -1,7 +1,10 @@
+import CustomerDashboard from "../components/CustomerDashboard"
 
 function HomePage() {
   return (
-    <div>HomePage</div>
+    <>
+    <CustomerDashboard />
+    </>
   )
 }
 
