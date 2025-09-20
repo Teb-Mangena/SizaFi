@@ -1,11 +1,61 @@
-import { useState } from 'react';
-import ChartSideBar from "../components/ChartSideBar";
-import ChatsBody from "../components/ChatsBody";
+import { useState, useEffect } from 'react';
+import { axiosInstance } from '../lib/axios';
 import { MessageCircle, Search, Menu, X } from 'lucide-react';
+import ChartSideBar from '../components/ChartSideBar';
+import ChatsBody from '../components/ChatsBody';
 
 function ChatsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch messages when a chat is selected
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!selectedChat) return;
+      
+      setLoadingMessages(true);
+      setError(null);
+      
+      try {
+        const response = await axiosInstance.get(`/message/${selectedChat._id}`);
+        setMessages(response.data);
+      } catch (err) {
+        console.error('Error fetching messages:', err);
+        setError('Failed to load messages');
+      } finally {
+        setLoadingMessages(false);
+      }
+    };
+
+    fetchMessages();
+  }, [selectedChat]);
+
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  const handleSendMessage = async (text) => {
+    if (!selectedChat) return;
+    
+    try {
+      const response = await axiosInstance.post(`/message/send/${selectedChat._id}`, {
+        text: text
+      });
+      
+      // Add the new message to our local state
+      setMessages(prevMessages => [...prevMessages, response.data]);
+    } catch (err) {
+      console.error('Error sending message:', err);
+      setError('Failed to send message');
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -31,25 +81,14 @@ function ChatsPage() {
                 <MessageCircle className="text-primary" size={24} />
                 Messages
               </h1>
-              <button className="btn btn-ghost btn-sm">
-                <Search size={18} />
-              </button>
-            </div>
-            
-            <div className="mt-4 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search conversations..."
-                className="input input-bordered w-full pl-10"
-              />
             </div>
           </div>
           
           <div className="flex-1 overflow-y-auto">
-            <ChartSideBar onSelectChat={setSelectedChat} selectedChat={selectedChat} />
+            <ChartSideBar 
+              onSelectChat={handleSelectChat} 
+              selectedChat={selectedChat} 
+            />
           </div>
         </div>
       </div>
@@ -65,7 +104,13 @@ function ChatsPage() {
       {/* Main chat area */}
       <div className="flex-1 flex flex-col">
         {selectedChat ? (
-          <ChatsBody chat={selectedChat} />
+          <ChatsBody 
+            chat={selectedChat} 
+            messages={messages}
+            loading={loadingMessages}
+            error={error}
+            onSendMessage={handleSendMessage}
+          />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center bg-white p-4">
             <div className="text-center max-w-md">
@@ -74,9 +119,6 @@ function ChatsPage() {
               <p className="text-gray-500 mb-6">
                 Select a conversation from the sidebar to start chatting, or start a new conversation.
               </p>
-              <button className="btn btn-primary">
-                Start New Conversation
-              </button>
             </div>
           </div>
         )}
