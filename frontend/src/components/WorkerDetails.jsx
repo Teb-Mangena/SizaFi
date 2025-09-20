@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { axiosInstance } from "../lib/axios";
 import { 
   User, 
@@ -23,6 +23,7 @@ function WorkerDetails() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWorkerDetails = async () => {
@@ -43,7 +44,7 @@ function WorkerDetails() {
   const handleBookService = async () => {
     setIsProcessing(true);
     try {
-      const response = await axiosInstance.post('http://localhost:5050/api/payment/initialize', {
+      const response = await axiosInstance.post('/payment/initialize', {
         amount: 250,
         workerId: id,
         callback_url: `${window.location.origin}/payment/verify`
@@ -180,8 +181,8 @@ function WorkerDetails() {
                     <span>Within 2 hours</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="font-medium w-24">Hourly Rate:</span>
-                    <span className="text-primary font-semibold">R2500 per day</span>
+                    <span className="font-medium w-24">Rate:</span>
+                    <span className="text-primary font-semibold">R250 per day</span>
                   </div>
                 </div>
               </div>
@@ -245,7 +246,7 @@ function WorkerDetails() {
           {/* Action Buttons */}
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="btn btn-primary flex-1">
+              <button className="btn btn-primary flex-1" onClick={() => navigate("/messages")} >
                 <MessageCircle size={18} className="mr-2" />
                 Send Message
               </button>
