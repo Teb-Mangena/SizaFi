@@ -1,5 +1,6 @@
 import CustomerDashboard from "../components/CustomerDashboard";
 import WorkerDashboard from "../components/WorkerDashboard";
+import AdminDashboard from "../components/AdminDashboard"
 import { useAuthStore } from "../store/authStore";
 
 function HomePage() {
@@ -16,7 +17,7 @@ function HomePage() {
       {user ? (
         <>
           {user.role === 'user' && <CustomerDashboard />}
-          {user.role === 'admin' && <h1>Admin Dashboard Coming Soon...</h1>}
+          {user.role === 'admin' && <AdminDashboard />}
           {isWorker && <WorkerDashboard />}
         </>
       ) : (
