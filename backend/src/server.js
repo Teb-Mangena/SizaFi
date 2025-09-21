@@ -27,7 +27,12 @@ app.use('/api/user', userRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/application', applicationRoutes)
+app.use('/api/application', applicationRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
 
 // connect DB & start the server
 connectDB().then(() => {
