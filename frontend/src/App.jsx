@@ -16,6 +16,7 @@ import ChatsPage from './pages/ChatsPage.jsx'
 import WorkerDetails from './components/WorkerDetails.jsx'
 import RegisterAsWorker from './pages/RegisterAsWorker.jsx'
 import PaymentVerify from './pages/PaymentVerify.jsx'
+import ViewApplicationStatus from './pages/ViewApplicationStatus.jsx'
 
 function App() {
 
@@ -80,6 +81,11 @@ function App() {
         <Route 
           path='/worker-details/:id'
           element={user ? <WorkerDetails /> : <Navigate to="/login" />}
+        />
+
+        <Route 
+          path='/view-status'
+          element={user ? <ViewApplicationStatus /> : <Navigate to="/login" />}
         />
 
         <Route path="/payment/verify" element={<PaymentVerify />} />

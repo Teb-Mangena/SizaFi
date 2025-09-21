@@ -11,7 +11,8 @@ import {
   Bell,
   Search,
   Filter,
-  Paperclip
+  Paperclip,
+  Book
 } from "lucide-react";
 
 function CustomerDashboard() {
@@ -119,6 +120,16 @@ function CustomerDashboard() {
               </div>
               <h3 className="card-title text-lg">Payments</h3>
               <p className="text-sm text-gray-500">Manage payment methods</p>
+            </div>
+          </Link>
+
+          <Link to="/view-status" className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <div className="card-body items-center text-center">
+              <div className="p-3 rounded-full bg-red-200 text-red-600 mb-2">
+                <Book size={24} />
+              </div>
+              <h3 className="card-title text-lg">View Status</h3>
+              <p className="text-sm text-gray-500">View application status</p>
             </div>
           </Link>
         </div>
