@@ -10,6 +10,7 @@ import userRoutes from './routes/user.route.js';
 import messageRoutes from './routes/message.route.js';
 import workerRoutes from './routes/workers.route.js';
 import paymentRoutes from './routes/payment.js';
+import applicationRoutes from './routes/application.js';
 
 // create express app
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/application', applicationRoutes)
 
 // connect DB & start the server
 connectDB().then(() => {
